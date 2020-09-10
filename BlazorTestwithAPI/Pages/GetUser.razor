@@ -1,0 +1,48 @@
+﻿@page "/getuser"
+@inject HttpClient Http
+
+@if (user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <p>@user.UserName</p>
+    <br />
+    <p>@user.Rating</p>
+    <p>@user.RealEstates</p>
+    <p>@user.Comments</p>
+}
+
+@code {
+    private User user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            user = await Http.GetFromJsonAsync<User>("api/Users/USERNAME");
+        }
+        catch (HttpRequestException)
+        {
+            Console.WriteLine("An error Occured");
+        }
+        catch (NotSupportedException)
+        {
+            Console.WriteLine("Content type is not supported");
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            Console.WriteLine("Invalid Json");
+        }
+    }
+
+
+    public class User
+    {
+        public string UserName { get; set; }
+        public int RealEstates { get; set; }
+        public int Comments { get; set; }
+        public double Rating { get; set; }
+    }
+}
