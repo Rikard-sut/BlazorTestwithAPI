@@ -1,0 +1,62 @@
+﻿@page "/realestate/{id:int}"
+@using System.Net.Http.Json;
+@inject HttpClient Http
+<h3>RealEstate Details</h3>
+@if (estate == null)
+{
+    <p>Loading....</p>
+}
+else
+{
+    <p> @estate.Title</p>
+    <p> @estate.Description</p>
+    <p> @estate.Id</p>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EstateAd estate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string Uri = "api/RealEstates/" + Id;
+        try
+        {
+            estate = await Http.GetFromJsonAsync<EstateAd>(Uri);
+        }
+        catch (HttpRequestException)
+        {
+            Console.WriteLine("An error Occured");
+        }
+        catch (NotSupportedException)
+        {
+            Console.WriteLine("Content type is not supported");
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            Console.WriteLine("Invalid Json");
+        }
+    }
+
+    public class EstateAd
+    {
+        public DateTime CreatedOn { get; set; }
+        public int ContstructionYear { get; set; }
+        public string Address { get; set; }
+        public string RealEstateType { get; set; }
+        public string Description { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public int SellingPrice { get; set; }
+        public int RentingPrice { get; set; }
+        public bool CanBeSold { get; set; }
+        public bool CanBeRented { get; set; }
+        public String ImageUrl { get; set; }
+
+
+    }
+
+}
